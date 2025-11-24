@@ -17,8 +17,6 @@ const login = async (req, res) => {
 
         const user = result.recordset[0];
 
-        // For the test, if I used plain text in seed, I should compare directly or use bcrypt if I hashed it.
-        // In init.sql I put a bcrypt hash for '123456'.
         const passwordIsValid = bcrypt.compareSync(
             password,
             user.PasswordHash
