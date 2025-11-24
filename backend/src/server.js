@@ -45,13 +45,15 @@ app.get('/', (req, res) => {
     res.send('DICRI API is running');
 });
 
-const initDb = require('./utils/initDb');
+if (require.main === module) {
+    const initDb = require('./utils/initDb');
 
-// Initialize DB then start server
-initDb().then(() => {
-    app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
+    // Initialize DB then start server
+    initDb().then(() => {
+        app.listen(PORT, () => {
+            console.log(`Server running on port ${PORT}`);
+        });
     });
-});
+}
 
 module.exports = app; // For testing
