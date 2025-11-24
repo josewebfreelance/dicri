@@ -25,6 +25,24 @@ const Reports = () => {
         }
     };
 
+    const handlePrint = async () => {
+        try {
+            const response = await api.get('/reports/stats/pdf', {
+                params: {
+                    estado: status || null,
+                    fechaInicio: startDate || null,
+                    fechaFin: endDate || null
+                },
+                responseType: 'blob'
+            });
+            const blob = new Blob([response.data], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+            window.open(url, '_blank');
+        } catch (error) {
+            console.error('Error fetching report:', error);
+        }
+    };
+
     return (
         <div>
             <h2 className="text-3xl font-bold mb-6">Reportes</h2>
@@ -72,7 +90,7 @@ const Reports = () => {
                 <div className="bg-white rounded shadow overflow-hidden">
                     <div className="p-4 border-b bg-gray-50 flex justify-between">
                         <h3 className="font-bold">Resultados: {results.length}</h3>
-                        <button onClick={() => window.print()} className="text-blue-600 hover:underline">Imprimir / PDF</button>
+                        <button onClick={handlePrint} className="text-blue-600 hover:underline">Imprimir / PDF</button>
                     </div>
                     <table className="min-w-full">
                         <thead className="bg-gray-50">

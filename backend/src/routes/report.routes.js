@@ -24,4 +24,23 @@ const { verifyToken } = require('../middleware/auth.middleware');
  */
 router.get('/stats', verifyToken, controller.getStats);
 
+/**
+ * @swagger
+ * /api/reports/stats/pdf:
+ *   get:
+ *     summary: Download statistics report as PDF
+ *     tags: [Reports]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: PDF file
+ *         content:
+ *           application/pdf:
+ *             schema:
+ *               type: string
+ *               format: binary
+ */
+router.get('/stats/pdf', verifyToken, controller.getStatsPdf);
+
 module.exports = router;
