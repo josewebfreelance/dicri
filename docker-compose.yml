@@ -1,0 +1,49 @@
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    platform: linux/amd64
+    container_name: dicri_db
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=9db39eBd@Z&
+    ports:
+      - "1433:1433"
+    volumes:
+      - db_data:/var/opt/mssql
+      - ./database:/docker-entrypoint-initdb.d
+    networks:
+      - dicri-network
+
+  backend:
+    build: ./backend
+    container_name: dicri_backend
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_SERVER=db
+      - DB_USER=sa
+      - DB_PASSWORD=9db39eBd@Z&
+      - DB_NAME=DICRI_DB
+      - PORT=3000
+    restart: on-failure
+    volumes:
+      - ./database/init.sql:/app/init.sql
+    depends_on:
+      - db
+    networks:
+      - dicri-network
+
+  frontend:
+    build: ./frontend
+    container_name: dicri_frontend
+    ports:
+      - "5173:80"
+    networks:
+      - dicri-network
+
+networks:
+  dicri-network:
+    driver: bridge
+
+volumes:
+  db_data:
