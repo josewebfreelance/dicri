@@ -37,9 +37,21 @@ const initDb = async () => {
 
             console.log('Running initialization script...');
 
-            const initSqlPath = path.join(__dirname, '../../init.sql');
+            // Check multiple paths for init.sql (Docker vs Local)
+            const possiblePaths = [
+                path.join(__dirname, '../../init.sql'), // Docker volume mount
+                path.join(__dirname, '../../../database/init.sql') // Local dev
+            ];
 
-            if (fs.existsSync(initSqlPath)) {
+            let initSqlPath = null;
+            for (const p of possiblePaths) {
+                if (fs.existsSync(p)) {
+                    initSqlPath = p;
+                    break;
+                }
+            }
+
+            if (initSqlPath) {
                 const sqlContent = fs.readFileSync(initSqlPath, 'utf8');
                 const commands = sqlContent.split(/^\s*GO\s*$/gm);
 
