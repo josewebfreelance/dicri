@@ -12,7 +12,7 @@ const login = async (req, res) => {
             .execute('sp_Login');
 
         if (result.recordset.length === 0) {
-            return res.status(404).send({ message: 'User not found.' });
+            return res.status(404).send({ message: 'Usuario no encontrado.' });
         }
 
         const user = result.recordset[0];
@@ -23,7 +23,7 @@ const login = async (req, res) => {
         );
 
         if (!passwordIsValid) {
-            return res.status(401).send({ accessToken: null, message: 'Invalid Password!' });
+            return res.status(401).send({ accessToken: null, message: 'Contraseña inválida.' });
         }
 
         const token = jwt.sign({ id: user.Id, role: user.Role }, process.env.JWT_SECRET || 'secret_key', {
